@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/group_app_bar"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/all_query"
+            android:icon="@drawable/ic_menu_all_query"
+            android:title="Все вопросы" />
+        <item
+            android:id="@+id/all_tegy"
+            android:icon="@drawable/ic_menu_all_tegy"
+            android:title="Все теги" />
+        <item
+            android:id="@+id/users"
+            android:icon="@drawable/ic_menu_users"
+            android:title="Пользователи" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="Настройки" />
+    </group>
+
+</menu>

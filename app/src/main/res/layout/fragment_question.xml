@@ -1,0 +1,28 @@
+<android.support.v4.widget.SwipeRefreshLayout android:id="@+id/activity_main_swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+<!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--tools:context="ru.toster.toster.fragmentTab.QuestionFragment">-->
+
+    <ScrollView
+        android:id="@+id/scroll_question_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/scroll_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+
+<!--</LinearLayout>-->
+</android.support.v4.widget.SwipeRefreshLayout>
