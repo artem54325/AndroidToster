@@ -169,6 +169,16 @@ public class PostFragment extends AppCompatActivity
             for (int i = 0; i < page.getAnswerObjectsRight().size(); i++) {
                 final View item = inflater.inflate(R.layout.el_comm_list, linearRight, false);
                 ((TextView)item.findViewById(R.id.el_name)).setText(page.getAnswerObjectsRight().get(i).getName() + " " + page.getAnswerObjectsRight().get(i).getDogName());
+                final int finalI1 = i;
+                ((TextView)item.findViewById(R.id.el_name)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), UserAndTagActivity.class);
+                        intent.putExtra("url", "https://toster.ru/user/"+page.getAnswerObjectsRight().get(finalI1).getDogName().replace("@",""));
+                        intent.putExtra("tag_and_user", true);
+                        startActivity(intent);
+                    }
+                });
                 ((TextView)item.findViewById(R.id.el_text)).setText(page.getAnswerObjectsRight().get(i).getText());
                 ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+page.getAnswerObjectsRight().get(i).getNumberUserComments()+")");//el_date
                 ((TextView)item.findViewById(R.id.el_comm)).setText(page.getAnswerObjectsRight().get(i).getToggleObjects().size()+" комментариев");

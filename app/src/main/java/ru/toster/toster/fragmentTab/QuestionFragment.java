@@ -134,7 +134,7 @@ public class QuestionFragment extends Fragment {
             final QuestionFragment fragment = this;
             item.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {//ИЗМЕНИТЬ!!
+                public void onClick(View view) {
                     Intent intent = new Intent(getActivity(), PostFragment.class);
                     intent.putExtra("url", list.get(finalI).getHref());
                     startActivity(intent);

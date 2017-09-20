@@ -200,40 +200,40 @@ public class AllTagsFragment extends Fragment {
     public void views(final List<CardObject> list) {
         LinearLayout layoutVert = null;
         LinearLayout.LayoutParams layoutParams = null;
-        for (int i=0;i<list.size();i++){
-            if (i%2==0){
-                layoutVert = new LinearLayout(getContext());
-                layoutVert.setOrientation(LinearLayout.HORIZONTAL);
-                layoutParams = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
-            }
-
-            final View item = inflater.inflate(R.layout.el_card, this.layout, false);
-            new DowlandImage((ImageView)item.findViewById(R.id.tag_url_image)).execute(list.get(i).getUrlImage());//((ImageView)item.findViewById(R.id.tag_url_image)
-            ((TextView)item.findViewById(R.id.tag_name)).setText(list.get(i).getTag());
-            ((TextView)item.findViewById(R.id.tag_question)).setText(list.get(i).getQuestion());
-            ((TextView)item.findViewById(R.id.tag_subscriptions)).setText("Подписаться "+list.get(i).getSubscribeNumber());
-            ((LinearLayout)item.findViewById(R.id.users_layout)).setVisibility(View.GONE);
-
-            Display display = getActivity().getWindowManager().getDefaultDisplay();
-
-            final int finalI = i;
-            item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getActivity(), UserAndTagActivity.class);
-                    intent.putExtra("url", list.get(finalI).getHref());
-                    intent.putExtra("tag_and_user", false);
-                    startActivity(intent);
+            for (int i = 0; i < list.size(); i++) {
+                if (i % 2 == 0) {
+                    layoutVert = new LinearLayout(getContext());
+                    layoutVert.setOrientation(LinearLayout.HORIZONTAL);
+                    layoutParams = new LinearLayout.LayoutParams(DrawerLayout.LayoutParams.MATCH_PARENT, DrawerLayout.LayoutParams.WRAP_CONTENT);
                 }
-            });
 
-            item.getLayoutParams().width = (int) ((display.getWidth()/2)-2.5);
+                final View item = inflater.inflate(R.layout.el_card, this.layout, false);
+                new DowlandImage((ImageView) item.findViewById(R.id.tag_url_image)).execute(list.get(i).getUrlImage());//((ImageView)item.findViewById(R.id.tag_url_image)
+                ((TextView) item.findViewById(R.id.tag_name)).setText(list.get(i).getTag());
+                ((TextView) item.findViewById(R.id.tag_question)).setText(list.get(i).getQuestion());
+                ((TextView) item.findViewById(R.id.tag_subscriptions)).setText("Подписаться " + list.get(i).getSubscribeNumber());
+                ((LinearLayout) item.findViewById(R.id.users_layout)).setVisibility(View.GONE);
 
-            layoutVert.addView(item);
-            if (i%2==1){
-                layout.addView(layoutVert, layoutParams);
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+
+                final int finalI = i;
+                item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getActivity(), UserAndTagActivity.class);
+                        intent.putExtra("url", list.get(finalI).getHref());
+                        intent.putExtra("tag_and_user", false);
+                        startActivity(intent);
+                    }
+                });
+
+                item.getLayoutParams().width = (int) ((display.getWidth() / 2) - 2.5);
+
+                layoutVert.addView(item);
+                if (i % 2 == 1) {
+                    layout.addView(layoutVert, layoutParams);
+                }
             }
-        }
         dowlandPage = false;
         mSwipeRefreshLayout.setRefreshing(false);
     }

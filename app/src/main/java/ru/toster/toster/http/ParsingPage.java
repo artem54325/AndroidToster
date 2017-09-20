@@ -40,7 +40,6 @@ public class ParsingPage {
 
             cardsList.add(object);
         }
-        System.out.println("WORK asd " + cardsList.size());
         return cardsList;
     }
 
@@ -74,6 +73,7 @@ public class ParsingPage {
 
     public static NameAndTagFullInfoObject parsFullName(String html){
         NameAndTagFullInfoObject full = new NameAndTagFullInfoObject();
+
         full.setName(html.split("<meta property=\"og:title\" content=\"Пользователь ")[1].split("\">")[0].replaceAll("\n","").replaceAll("  ", ""));
         full.setUrlPhoto(html.split("<meta property=\"og:image\" content=\"")[1].split("\">")[0].replaceAll("\n","").replaceAll("  ", ""));//
 
@@ -97,23 +97,29 @@ public class ParsingPage {
 
     public static List<CardObject> parsAlltag(String html){
         List<CardObject> cardList = new ArrayList<>();
-        String[] list = html.split("class=\"content-list content-list_cards-tags\"")[1].split("class=\"paginator\"")[0].split("class=\"content-list__item\"");
-        for (int i=1;i<list.length;i++){
-            CardObject cardObject = new CardObject();
-            try {
-                cardObject.setUrlImage(list[i].split("<img class=\"tag__image tag__image_bg\" src=\"")[1].split("\"")[0]);
-            }catch (Exception e){
-                cardObject.setUrlImage(null);
-                e.printStackTrace();
-            }
-            cardObject.setQuestion(list[i].split("<meta itemprop=\"interactionCount\" content=\"")[1].split("\">")[1].split("</a>")[0].replaceAll("  ", "").replaceAll("\n",""));
-//            cardObject.setQuestionNumber(Integer.parseInt(list[i].split("")[1].split("")[0]));
-            cardObject.setSubscribe(false);
-            cardObject.setTag(list[i].split("<meta itemprop=\"name\" content=\"")[1].split("\">")[0]);
-            cardObject.setSubscribeNumber(list[i].split("<span class=\"btn__counter\" role=\"subscribers_count\" title=\"")[1].split("\">")[2].split("</span>")[0].replaceAll("  ", "").replaceAll("\n",""));
-            cardObject.setHref(list[i].split("card__head-image card__head-image_tag\" href=\"")[1].split("\">")[0]);//card__head-image card__head-image_tag" href=" ">
 
-            cardList.add(cardObject);
+        String[] list = html.split("class=\"content-list__item\"");//.split("class=\"content-list content-list_cards-tags\"")[1].split("class=\"paginator\"")[0]
+        for (int i=1;i<list.length;i++){
+            try {
+                CardObject cardObject = new CardObject();
+                try {
+                    cardObject.setUrlImage(list[i].split("<img class=\"tag__image tag__image_bg\" src=\"")[1].split("\"")[0]);
+                }catch (Exception e){
+                    cardObject.setUrlImage(null);
+                    e.printStackTrace();
+                }
+                cardObject.setQuestion(list[i].split("<meta itemprop=\"interactionCount\" content=\"")[1].split("\">")[1].split("</a>")[0].replaceAll("  ", "").replaceAll("\n",""));
+//            cardObject.setQuestionNumber(Integer.parseInt(list[i].split("")[1].split("")[0]));
+                cardObject.setSubscribe(false);
+                cardObject.setTag(list[i].split("<meta itemprop=\"name\" content=\"")[1].split("\">")[0]);
+                cardObject.setSubscribeNumber(list[i].split("<span class=\"btn__counter\" role=\"subscribers_count\" title=\"")[1].split("\">")[2].split("</span>")[0].replaceAll("  ", "").replaceAll("\n",""));
+                cardObject.setHref(list[i].split("card__head-image card__head-image_tag\" href=\"")[1].split("\">")[0]);//card__head-image card__head-image_tag" href=" ">
+
+                cardList.add(cardObject);
+            }catch (java.lang.ArrayIndexOutOfBoundsException e){
+                e.printStackTrace();
+                break;
+            }
         }
         return cardList;
     }
@@ -144,7 +150,7 @@ public class ParsingPage {
     public static QuestionPageObject getQuestPage(String html){
         QuestionPageObject page = new QuestionPageObject();
         page.setName(html.split("<meta itemprop=\"name\" content=\"")[1].split("\">")[0]);
-        page.setDogName("@" + html.split("<meta itemprop=\"name\" content=\"")[1].split("\">")[0]);
+        page.setDogName("@" + html.split("<meta itemprop=\"alternateName\" content=\"")[1].split("\">")[0]);
         page.setTag(html.split("<meta property=\"og:keywords\" content=\"")[1].split("\">")[0]);
         page.setTextName(html.split("<meta name=\"twitter:title\" content=\"")[1].split("\">")[0]);
         page.setText(html.split("<div class=\"question__text\" itemprop=\"text description\">")[1].replace("    ", "").split("</div>")[0].replaceAll("<br/>", "\n"));
