@@ -1,5 +1,6 @@
 package ru.toster.toster.fragmentTab.userAndTag;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -39,38 +43,45 @@ import ru.toster.toster.fragmentTab.QuestionFragment;
 import ru.toster.toster.fragmentTab.allTags.AllTagsFragment;
 import ru.toster.toster.fragmentTab.users.UsersFragment;
 import ru.toster.toster.http.DowlandImage;
-import ru.toster.toster.http.HTTP;
+import ru.toster.toster.http.HTTPCleint;
 import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.NameAndTagFullInfoObject;
 
 public class UserAndTagActivity extends AppCompatActivity
-        implements AppBarLayout.OnOffsetChangedListener, NavigationView.OnNavigationItemSelectedListener {//
+        implements AppBarLayout.OnOffsetChangedListener, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {//
 
-
-    private String url;
-    private boolean tagAndUser;
-    private TabLayout tabLayout;
-    private NameAndTagFullInfoObject fullName;
+    private UserAndTagPresenter presenter;
+//    @BindView(R.id.materialup_tabs)
+    TabLayout tabLayout;
     public static final String TAG = "UserAndTagFragment";
-    private static Request request;
-    private ViewPager viewPager;
-    private static OkHttpClient client = HTTP.getClient();
+//    @BindView(R.id.materialup_viewpager)
+    ViewPager viewPager;
+    private boolean tagAndUser;
 
 
     private static final int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
     private boolean mIsAvatarShown = true;
     private Toolbar toolbar;
-    private DrawerLayout drawer;
 
+//    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
     private int mMaxScrollSize;
+
+    @Override
+    public void onClick(View view) {
+        onBackPressed();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collapsing_toolbar_layout);
+        toolbar = (Toolbar) findViewById(R.id.materialup_toolbar);
 
-        this.url = getIntent().getStringExtra("url");
-        this.tagAndUser = getIntent().getBooleanExtra("tag_and_user", true);//user=true tag=false
+//        ButterKnife.bind(this);
+
+        presenter = new UserAndTagPresenter(this, getIntent().getStringExtra("url"), getIntent().getBooleanExtra("tag_and_user", true));
+
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -81,23 +92,11 @@ public class UserAndTagActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        System.out.println(tagAndUser);
-
-        if (tagAndUser) {
-            getHttpUser(url);
-        }else{
-            getHttpTag(url);
-        }
         tabLayout = (TabLayout) findViewById(R.id.materialup_tabs);
-        viewPager  = (ViewPager) findViewById(R.id.materialup_viewpager);
-        AppBarLayout appbarLayout = (AppBarLayout) findViewById(R.id.materialup_appbar);
 
-        toolbar = (Toolbar) findViewById(R.id.materialup_toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        viewPager  = (ViewPager) findViewById(R.id.materialup_viewpager);
+
+        AppBarLayout appbarLayout = (AppBarLayout) findViewById(R.id.materialup_appbar);
 
         setSupportActionBar(toolbar);
 
@@ -105,8 +104,13 @@ public class UserAndTagActivity extends AppCompatActivity
         mMaxScrollSize = appbarLayout.getTotalScrollRange();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        presenter.getHttp();
     }
 
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(parent, name, context, attrs);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -142,79 +146,17 @@ public class UserAndTagActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private synchronized void getHttpUser(final String urlGet){
-
-        request = new Request.Builder()
-                .url(urlGet + "/info")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                fullName = (ParsingPage.parsFullName(response.body().string()));
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getViewUser();
-                        TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
-                        adapter.addFragment(new InfoFragment(fullName), "Информация");
-//                        adapter.addFragment(,"Ответы");
-                        adapter.addFragment(new QuestionFragment(urlGet, QuestionFragment.EnumQuestion.QUESTION),"Вопросы");
-                        adapter.addFragment(new QuestionFragment(urlGet, QuestionFragment.EnumQuestion.IQUESTION),"Подписан");
-                        adapter.addFragment(new AllTagsFragment(url),"Теги");
-//                        adapter.addFragment(,"Нравится");
-                        viewPager.setAdapter(adapter);
-                        tabLayout.setupWithViewPager(viewPager);
-                    }
-                });
-            }
-        });
+    public void views(UserAndTagActivity.TabsAdapter adapter, NameAndTagFullInfoObject fullName){
+        if (tagAndUser){
+            setViewTage(fullName);
+        }else{
+            setViewUser(fullName);
+        }
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
-    private synchronized void getHttpTag(final String urlGet){
-
-        request = new Request.Builder()
-                .url(urlGet + "/info")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                fullName = ParsingPage.parsFullTag(response.body().string());
-                System.out.println();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getViewTage();
-                        TabsAdapter adapter = new TabsAdapter(getSupportFragmentManager());
-                        adapter.addFragment(new InfoFragment(fullName), "Информация");
-                        adapter.addFragment(new QuestionFragment(urlGet, QuestionFragment.EnumQuestion.QUESTION),"Новые вопросы");
-                        adapter.addFragment(new QuestionFragment(urlGet, QuestionFragment.EnumQuestion.InterestQuestions),"Интересные");
-                        adapter.addFragment(new QuestionFragment(urlGet, QuestionFragment.EnumQuestion.QuestionsWoAnswer),"Без ответа");
-                        adapter.addFragment(new UsersFragment(urlGet, QuestionFragment.EnumQuestion.QuestionsWoAnswer),"Подписчики");
-                        viewPager.setAdapter(adapter);
-                        tabLayout.setupWithViewPager(viewPager);
-                    }
-                });
-            }
-        });
-    }
-
-    private void getViewUser() {
+    private void setViewUser(NameAndTagFullInfoObject fullName) {
         new DowlandImage((ImageView)findViewById(R.id.user_tag_image)).execute(fullName.getUrlPhoto());
         ((TextView)findViewById(R.id.user_tag_name)).setText(fullName.getName());
         if (fullName.getDopName()!=null){
@@ -225,7 +167,7 @@ public class UserAndTagActivity extends AppCompatActivity
         ((TextView)findViewById(R.id.user_tag_answer)).setText(fullName.getAnswer());
         ((TextView)findViewById(R.id.user_tag_solutions)).setText(fullName.getDecisions());
     }
-    private void getViewTage() {
+    private void setViewTage(NameAndTagFullInfoObject fullName) {
         new DowlandImage((ImageView)findViewById(R.id.user_tag_image)).execute(fullName.getUrlPhoto());
         ((TextView)findViewById(R.id.user_tag_name)).setText(fullName.getName());
         if (fullName.getDopName()!=null){
@@ -239,7 +181,8 @@ public class UserAndTagActivity extends AppCompatActivity
     }
 
 
-    private static class TabsAdapter extends FragmentPagerAdapter {
+
+    public static class TabsAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -269,21 +212,20 @@ public class UserAndTagActivity extends AppCompatActivity
             return mFragmentTitleList.get(position);
         }
     }
-    private static class InfoFragment extends Fragment{
-        NameAndTagFullInfoObject fullName;
-
-        public InfoFragment(NameAndTagFullInfoObject fullName) {
-            this.fullName = fullName;
-        }
-
+    public static class InfoFragment extends Fragment{
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.info_fragment, container, false);//fragment_all_tags
-            if (fullName.getTextInfo()==null){
+            //bundle дописать
+            String textInfo=null;
+            Bundle bundle = getArguments();
+            if (bundle!=null) textInfo = bundle.getString("url");//Чтобы не писать другой метод пусть, в этом же слоту присылает))
+
+            if (textInfo==null){
                 ((TextView)view.findViewById(R.id.text_view)).setText("Пользователь пока ничего не рассказал о себе");
             }else{
-                ((TextView)view.findViewById(R.id.text_view)).setText(fullName.getTextInfo());
+                ((TextView)view.findViewById(R.id.text_view)).setText(textInfo);
             }
             return view;
         }

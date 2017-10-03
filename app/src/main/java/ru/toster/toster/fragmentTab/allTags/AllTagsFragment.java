@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -27,174 +29,77 @@ import okhttp3.Request;
 import okhttp3.Response;
 import ru.toster.toster.R;
 import ru.toster.toster.fragmentTab.QuestionFragment;
+import ru.toster.toster.fragmentTab.QuestionPresenter;
 import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
 import ru.toster.toster.http.DowlandImage;
-import ru.toster.toster.http.HTTP;
+import ru.toster.toster.http.HTTPCleint;
 import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.CardObject;
 
 
-public class AllTagsFragment extends Fragment {
+public class AllTagsFragment extends Fragment implements ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private List<CardObject>listCard = new ArrayList<>();
-    private QuestionFragment.EnumQuestion enumQuestion = null;
+    private AllTagsPresenter presenter;
+
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private static OkHttpClient client = HTTP.getClient();
     private boolean dowlandPage = false;
-    private ScrollView scrollView;
-    private static Request request;
-    private LinearLayout layout;
-    private int number=1;//Номер страницы сбора данных
-    private LayoutInflater inflater;
-    private String url;
 
-    public AllTagsFragment(String url) {
-        this.url = url;
+    @BindView(R.id.scroll_question_fragment)
+    ScrollView scrollView;
+
+    @BindView(R.id.scroll_container)
+    LinearLayout layout;
+
+    LayoutInflater inflater;
+
+    @Override
+    public void onScrollChanged() {
+        if (!dowlandPage) {
+            if (layout.getHeight() - (scrollView.getHeight() + scrollView.getScrollY())<=1500&&scrollView.getScrollY()>=500) {
+                dowlandPage = true;
+                presenter.getHttp();
+            }
+        }
     }
 
-    public AllTagsFragment(QuestionFragment.EnumQuestion questionsLatest) {
-        this.enumQuestion = questionsLatest;
+    @Override
+    public void onRefresh() {
+        if (!dowlandPage) {
+            dowlandPage = true;
+            presenter.setNumber(1);
+            presenter.getHttp();
+        }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getHttp(enumQuestion);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_question, container, false);//fragment_all_tags
+        View view = inflater.inflate(R.layout.fragment_question, container, false);
+        ButterKnife.bind(this, view);
 
-        layout = (LinearLayout) view.findViewById(R.id.scroll_container);
+        String url = null;
+        Bundle bundle = this.getArguments();
+        if (bundle!=null)
+            url = bundle.getString("url", null);
+
+        presenter = new AllTagsPresenter(url, this);
+
         this.inflater = inflater;
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
-        scrollView = (ScrollView)view.findViewById(R.id.scroll_question_fragment);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getHttp(enumQuestion);
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(this);
 
-            @Override
-            public void onScrollChanged() {
-                if (!dowlandPage) {
-                    if (layout.getHeight() - (scrollView.getHeight() + scrollView.getScrollY())<=1500&&scrollView.getScrollY()>=500) {
-                        dowlandPage = true;
-                        number++;
-                        getHttp(enumQuestion, number);
-                    }
-                }
-            }
-        });
-        views(listCard);
+        presenter.getHttp();
+
         return view;
-    }
-
-    private synchronized void getHttp(QuestionFragment.EnumQuestion enumQuestion) {
-        String url = null;
-        if (enumQuestion!=null) {
-            switch (enumQuestion) {
-                case TagsByQuestion:
-                    url = "https://toster.ru/tags/by_questions";
-                    break;
-                case TagsBySubscribers:
-                    url = "https://toster.ru/tags/by_watchers";
-                    break;
-                case Toster:
-                    url = "https://toster.ru";
-                    break;
-            }
-        }else {
-            url = this.url + "/tags";
-        }
-        request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                listCard = (ParsingPage.parsAlltag(response.body().string()));
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        layout.removeAllViews();
-                        views(listCard);
-                    }
-                });
-            }
-        });
-    }
-
-    private void getHttp(QuestionFragment.EnumQuestion enumQuestion, int number) {
-        String url = null;
-        if (enumQuestion!=null) {
-            switch (enumQuestion) {
-                case TagsByQuestion:
-                    url = "https://toster.ru/tags/by_questions";
-                    break;
-                case TagsBySubscribers:
-                    url = "https://toster.ru/tags/by_watchers";
-                    break;
-                case Toster:
-                    url = "https://toster.ru";
-                    break;
-            }
-        }else {
-            url = this.url + "/tags";
-        }
-
-        if (number>=10)
-            return;
-        request = new Request.Builder()
-                .url(url+"?page="+number)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final List<CardObject> listCards = (ParsingPage.parsAlltag(response.body().string()));
-                final List<CardObject> list = new ArrayList<CardObject>();
-                for (int i=0;i<listCards.size();i++){
-                    boolean replay=false;
-                    for (int a=0;a<listCard.size();a++){
-                        if (listCards.get(i).getQuestion().equals(listCard.get(a).getQuestion())){
-                            replay = true;
-                            break;
-                        }
-                    }
-                    if (!replay) {
-                        list.add(listCards.get(i));
-                        listCard.add(listCards.get(i));
-                    }
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        views(list);
-                    }
-                });
-            }
-        });
     }
 
     public void views(final List<CardObject> list) {
@@ -222,7 +127,7 @@ public class AllTagsFragment extends Fragment {
                     public void onClick(View view) {
                         Intent intent = new Intent(getActivity(), UserAndTagActivity.class);
                         intent.putExtra("url", list.get(finalI).getHref());
-                        intent.putExtra("tag_and_user", false);
+                        intent.putExtra("tag_and_user", true);
                         startActivity(intent);
                     }
                 });

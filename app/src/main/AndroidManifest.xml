@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".fragmentTab.userAndTag.UserAndTagActivity"></activity>
-        <activity android:name=".fragmentTab.PostFragment"></activity>
+        <activity android:name=".fragmentTab.PostAppCompat"></activity>
     </application>
 
 </manifest>

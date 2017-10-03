@@ -124,8 +124,6 @@ tools:openDrawer="start">
                     android:text="Подписаться" />
 
             </LinearLayout>
-            ​
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/materialup.toolbar"
                 style=""

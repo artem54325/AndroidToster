@@ -1,9 +1,7 @@
 package ru.toster.toster.fragmentTab.users;
 
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,188 +18,92 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import ru.toster.toster.R;
-import ru.toster.toster.fragmentTab.PostFragment;
 import ru.toster.toster.fragmentTab.QuestionFragment;
 import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
-import ru.toster.toster.fragmentTab.userAndTag.UserAndTagFragment;
 import ru.toster.toster.http.DowlandImage;
-import ru.toster.toster.http.HTTP;
 import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.CardObject;
 
-public class UsersFragment extends Fragment {
-    private List<CardObject> listCard = new ArrayList<>();
-    private String url;
-    private QuestionFragment.EnumQuestion enumQuestion;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private static OkHttpClient client = HTTP.getClient();
-    private boolean dowlandPage = false;
-    private ScrollView scrollView;
-    private static Request request;
-    private LinearLayout layout;
-    private int number=1;//Номер страницы сбора данных
+public class UsersFragment extends Fragment implements ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener {
     private LayoutInflater inflater;
+    private UsersPresenter fragment;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private boolean dowlandPage = false;
+
+    @BindView(R.id.scroll_question_fragment)
+    ScrollView scrollView;
+
+    @BindView(R.id.scroll_container)
+    LinearLayout layout;
+
     public static final String TAG = "UsersFragment";
 
-    public UsersFragment(String url, QuestionFragment.EnumQuestion enumQuestion) {
-        this.url = url;
-        this.enumQuestion = enumQuestion;
+
+    @Override
+    public void onScrollChanged() {
+        if (!dowlandPage) {
+            if (layout.getHeight() - (scrollView.getHeight() + scrollView.getScrollY())<=1500&&scrollView.getScrollY()>=500) {
+                dowlandPage = true;
+                fragment.getHttp();
+            }
+        }
     }
 
-    public UsersFragment(QuestionFragment.EnumQuestion questionsLatest) {
-        this.enumQuestion = questionsLatest;
-    }
-
-    public UsersFragment(String url) {
-        this.url = url;
+    @Override
+    public void onRefresh() {
+        if (!dowlandPage) {
+            dowlandPage = true;
+            fragment.setNumber(1);
+            fragment.getHttp();
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getHttp(enumQuestion);
+        String url = null;
+        Bundle bundle = getArguments();
+        if (bundle!=null)
+            url = bundle.getString("url");
+        fragment = new UsersPresenter(this, url);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_question, container, false);//fragment_all_tags
+        ButterKnife.bind(this, view);
 
-//        layout = (LinearLayout) getActivity().findViewById(R.id.viewLinear);
-        layout = (LinearLayout) view.findViewById(R.id.scroll_container);
         layout.removeAllViews();
+
         this.inflater = inflater;
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.activity_main_swipe_refresh_layout);
-        scrollView = (ScrollView)view.findViewById(R.id.scroll_question_fragment);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getHttp(enumQuestion);
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        scrollView.getViewTreeObserver().addOnScrollChangedListener(this);
 
-            @Override
-            public void onScrollChanged() {
-                if (!dowlandPage) {
-                    if (layout.getHeight() - (scrollView.getHeight() + scrollView.getScrollY())<=1500&&scrollView.getScrollY()>=500) {
-                        dowlandPage = true;
-                        number++;
-                        getHttp(enumQuestion, number);
-                    }
-                }
-            }
-        });
-        views(listCard);
+        fragment.getHttp();
+
         return view;
     }
 
-    private synchronized void getHttp(QuestionFragment.EnumQuestion Users) {
-        String url = null;
-        switch (enumQuestion) {
-            case Users:
-                url = "https://toster.ru/users/main";//https://toster.ru/tags/by_questions?page=2
-                break;
-            default:
-                url=this.url + "/users";
-        }
-        request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                listCard = ParsingPage.parsAllUsers(response.body().string());
-                System.out.println("\n\n" + listCard.size());
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void run() {
-                        views(listCard);
-                    }
-                });
-            }
-        });
-    }
-
-    private void getHttp(QuestionFragment.EnumQuestion enumQuestion, int number) {
-        String url = null;
-        if (enumQuestion!=null) {
-            switch (enumQuestion) {
-                case Users:
-                    url = "https://toster.ru/users/main";//https://toster.ru/tags/by_questions?page=2
-                    break;
-            }
-        }else{
-            url=this.url + "/users";
-        }
-
-        request = new Request.Builder()
-                .url(url+"?page="+number)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final List<CardObject> listCards = (ParsingPage.parsAllUsers(response.body().string()));
-                final List<CardObject> list = new ArrayList<CardObject>();
-                for (int i=0;i<listCards.size();i++){
-                    boolean replay=false;
-                    for (int a=0;a<listCard.size();a++){
-                        if (listCards.get(i).getQuestion().equals(listCard.get(a).getQuestion())){
-                            replay = true;
-                            break;
-                        }
-                    }
-                    if (!replay) {
-                        list.add(listCards.get(i));
-                        listCard.add(listCards.get(i));
-                    }
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void run() {
-                        views(list);
-                    }
-                });
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public void views(final List<CardObject> list) {
         LinearLayout layoutVert = null;
         LinearLayout.LayoutParams layoutParams = null;

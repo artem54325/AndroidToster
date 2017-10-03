@@ -126,23 +126,26 @@ public class ParsingPage {
 
     public static List<QuestionObject> parsQuestion(String html){
         List<QuestionObject> questionObjectList = new ArrayList<>();
-//        Set<QuestionObject> questionObjectList = new HashSet<>();
 
             String[] list = html.split("<li class=\"content-list__item\" role=\"content-list_item\">");
             for (int i=1;i<list.length;i++){
                 try {
-                questionObjectList.add(new QuestionObject(
-                        list[i].split("https://toster.ru/tag/")[1].split("\">")[0],
-                        list[i].split("<a class=\"question__title-link question__title-link_list\" href=\"")[1].split("\" itemprop=\"url\">")[0],
-                        list[i].split("\" itemprop=\"url\">")[1].split(" </a>")[0].replaceAll("  ", "").replaceAll("\n",""),//сам вопрос
-                        list[i].split(" subscribers\">")[1].split("</span>")[0].replaceAll("  ", "").replaceAll("\n", ""),//кол-во Подписчики
-                        list[i].split("<time class=\"question__date question__date_publish\" pubdate=\"\" title=\"")[1].split("</time>")[0].split("\">")[1].replaceAll("  ", "").replaceAll("\n",""),//Время
-//                        Integer.parseInt(list[i].split("<meta itemprop=\"interactionCount\" content=\"")[2].split(" views\">")[0].replaceAll(" ", "")),//Просмотры   views">
-                        list[i].split(" views\">")[1].split("</span>")[0].replaceAll("  ", "").replaceAll("\n",""),
-                        list[i].contains("class=\"icon_svg icon_check\""),
-                        Integer.parseInt(list[i].split("<span itemprop=\"answerCount\">")[1].split("</span>")[0].replaceAll(" ", "").replaceAll("\n", ""))));
-                }catch (NullPointerException e){
-                    e.printStackTrace();
+                    QuestionObject object = new QuestionObject();//дописать добавление объектов!!
+                    object.setTag(list[i].split("https://toster.ru/tag/")[1].split("\">")[0]);
+                    object.setHref(list[i].split("<a class=\"question__title-link question__title-link_list\" href=\"")[1].split("\" itemprop=\"url\">")[0]);
+                    object.setQuestion(list[i].split("\" itemprop=\"url\">")[1].split(" </a>")[0].replaceAll("  ", "").replaceAll("\n", ""));
+                    try {
+                        object.setSubscribers(list[i].split(" subscribers\">")[1].split("</span>")[0].replaceAll("  ", "").replaceAll("\n", ""));
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        object.setSubscribers("0");
+                    }
+                    object.setDate(list[i].split("<time class=\"question__date question__date_publish\" pubdate=\"\" title=\"")[1].split("</time>")[0].split("\">")[1].replaceAll("  ", "").replaceAll("\n", ""));
+                    object.setViews(list[i].split(" views\">")[1].split("</span>")[0].replaceAll("  ", "").replaceAll("\n", ""));
+                    object.setAnswer(list[i].contains("class=\"icon_svg icon_check\""));
+                    object.setAnswer(Integer.parseInt(list[i].split("<span itemprop=\"answerCount\">")[1].split("</span>")[0].replaceAll(" ", "").replaceAll("\n", "")));
+                    questionObjectList.add(object);
+                }catch (Exception e){
+                    System.out.println(list[i]);
                 }
             }
         return questionObjectList;
@@ -201,8 +204,8 @@ public class ParsingPage {
 
 
     private static List<CommentToggleObject> getToggleObject(String html){
-
         List<CommentToggleObject> list = new ArrayList<>();
+
         String[] listHTML = html.split("<li class=\"content-list__item\" role=\"comments_item\">");
         for (int i=1;i<listHTML.length;i++){
             CommentToggleObject toggleObject = new CommentToggleObject();

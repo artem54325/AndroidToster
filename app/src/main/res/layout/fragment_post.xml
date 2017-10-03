@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context="ru.toster.toster.fragmentTab.PostFragment">
+            tools:context="ru.toster.toster.fragmentTab.PostAppCompat">
 
             <ScrollView
                 android:layout_width="match_parent"

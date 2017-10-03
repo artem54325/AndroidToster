@@ -23,7 +23,6 @@ import ru.toster.toster.objects.CommentToggleObject;
 
 public class CommentFragment extends DialogFragment {
     private LinearLayout layout;
-    private LayoutInflater inflater;
     private List<CommentToggleObject> listCommentToggle;
 
     public CommentFragment(List<CommentToggleObject> listCommentToggle) {
@@ -40,13 +39,16 @@ public class CommentFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comment, container, false);
-        this.inflater = inflater;
+
         this.layout = (LinearLayout) view.findViewById(R.id.comment_layout);
+
         getDialog().setTitle("Комментарии");
-        views();
+
+        views(inflater);
+
         return view;
     }
-    private void views(){
+    private void views(LayoutInflater inflater){
         for (int i=0;i<listCommentToggle.size();i++){
             final View item = inflater.inflate(R.layout.el_comm_list, layout, false);
             ((TextView)item.findViewById(R.id.el_name)).setText(listCommentToggle.get(i).getName() + " " + listCommentToggle.get(i).getDogName());
@@ -65,8 +67,8 @@ public class CommentFragment extends DialogFragment {
             ((TextView)item.findViewById(R.id.el_date)).setText(listCommentToggle.get(i).getDate());
             ((TextView)item.findViewById(R.id.el_comm)).setText("Ответить");
             ((TextView)item.findViewById(R.id.el_comm)).setTextColor(Color.parseColor("#2d72d9"));
-            item.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
+            item.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
             layout.addView(item);
         }
