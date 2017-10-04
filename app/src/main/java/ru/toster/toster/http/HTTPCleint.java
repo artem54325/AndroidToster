@@ -27,7 +27,7 @@ import ru.toster.toster.objects.QuestionPageObject;
 public class HTTPCleint extends AsyncTask<String, Void, String> {
     private Context context;
     private int number = 1;
-    private Presenter presenter;
+    private final Presenter presenter;
 
 
     public HTTPCleint(Context context, Presenter presenter) {

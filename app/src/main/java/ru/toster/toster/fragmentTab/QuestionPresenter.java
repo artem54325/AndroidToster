@@ -42,6 +42,8 @@ public class QuestionPresenter implements Presenter {
 
     @Override
     public void viewsPresent(final String html) {
+        if (fragment.getActivity()==null)
+            return;
         fragment.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

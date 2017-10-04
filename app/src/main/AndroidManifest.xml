@@ -12,17 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+
             android:name=".NewsActivity"
             android:label="@string/app_name_pril"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragmentTab.userAndTag.UserAndTagActivity"></activity>
-        <activity android:name=".fragmentTab.PostAppCompat"></activity>
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".fragmentTab.userAndTag.UserAndTagActivity"></activity>
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".fragmentTab.PostAppCompat"></activity>
     </application>
 
 </manifest>

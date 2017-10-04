@@ -50,7 +50,7 @@ public class UserAndTagPresenter implements Presenter{
         adapter.addFragment(NewsPresenter.getFragment(new QuestionFragment(), url+"/questions"),"Новые вопросы");
         adapter.addFragment(NewsPresenter.getFragment(new QuestionFragment(), url+"/interest_questions"),"Интересные");
         adapter.addFragment(NewsPresenter.getFragment(new QuestionFragment(), url+"/questions_wo_answer"),"Без ответа");
-        adapter.addFragment(NewsPresenter.getFragment(new QuestionFragment(), url+"/users"),"Подписчики");
+        adapter.addFragment(NewsPresenter.getFragment(new UsersFragment(), url+"/users"),"Подписчики");
 
         fragment.views(adapter, fullName);
     }

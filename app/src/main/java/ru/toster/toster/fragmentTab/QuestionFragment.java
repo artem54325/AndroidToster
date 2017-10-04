@@ -21,7 +21,7 @@ import ru.toster.toster.R;
 import ru.toster.toster.objects.QuestionObject;
 
 
-public class QuestionFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewTreeObserver.OnScrollChangedListener{
+public class QuestionFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ViewTreeObserver.OnScrollChangedListener{//
     private QuestionPresenter presenter;
 
     private boolean dowlandPage=false;
