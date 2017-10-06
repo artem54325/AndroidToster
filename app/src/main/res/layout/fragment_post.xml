@@ -44,7 +44,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -101,15 +102,15 @@
                             android:layout_height="wrap_content"
                             android:gravity="left|center"
                             android:text="название поста"
-                            android:textSize="24sp" />
+                            android:textSize="@dimen/post_text_size_name" />
 
-                        <TextView
+                        <org.sufficientlysecure.htmltextview.HtmlTextView
                             android:id="@+id/komm_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginRight="7dp"
                             android:text="text"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/post_text_size" />
 
                         <TextView
                             android:id="@+id/komm_time_and_views"
@@ -149,6 +150,7 @@
                             android:layout_marginTop="20dp"
                             android:layout_weight="1"
                             android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/number_answer_right"
                                 android:layout_width="wrap_content"
@@ -192,6 +194,7 @@
                             android:id="@+id/layout_koments"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_weight="1"
                             android:orientation="vertical"></LinearLayout>
 

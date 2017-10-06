@@ -1,50 +1,42 @@
 package ru.toster.toster.fragmentTab;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Html;
-import android.util.AttributeSet;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.io.IOException;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+import org.xml.sax.XMLReader;
+
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import ru.toster.toster.NewsActivity;
 import ru.toster.toster.R;
+import ru.toster.toster.fragmentTab.textView.AppearanceSpan;
+import ru.toster.toster.fragmentTab.textView.ParameterizedSpan;
 import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
-import ru.toster.toster.http.HTTPCleint;
-import ru.toster.toster.http.ParsingPage;
+import ru.toster.toster.http.DowlandImage;
 import ru.toster.toster.objects.CommentAnswerObject;
 import ru.toster.toster.objects.QuestionPageObject;
 
@@ -60,6 +52,9 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
 
 //    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
+
+    @BindView(R.id.komm_text)
+    HtmlTextView text;
 
 
     @Override
@@ -78,8 +73,6 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
 
         if (bundle!=null) url = bundle.getString("url", null);
 
-        System.out.println(url + " HTTP");
-
         postPresenter = new PostPresenter(this, url);
 
         postPresenter.getHttp();
@@ -92,14 +85,17 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(postPresenter);
 
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.fragment_post_swipe_refresh_layout);
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
         toolbar.setNavigationOnClickListener(this);
+
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        text.setLinksClickable(true);
+        text.setMovementMethod(new LinkMovementMethod());
     }
 
     @Override
@@ -146,8 +142,7 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         this.page = page;
         ((TextView) findViewById(R.id.komm_name)).setText(page.getName());
         ((TextView) findViewById(R.id.komm_dog_name)).setText(page.getDogName());
-        ((TextView) findViewById(R.id.komm_text)).setText(Html.fromHtml(page.getText()));
-        ((TextView) findViewById(R.id.komm_text)).setLinksClickable(true);
+        text.setHtml(page.getText());
         ((TextView) findViewById(R.id.komm_time_and_views)).setText(page.getDate());
         ((TextView) findViewById(R.id.komm_question_tags)).setText(page.getTag());
         ((TextView) findViewById(R.id.komm_text_name)).setText(page.getTextName());
@@ -172,7 +167,7 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
                         startActivity(intent);
                     }
                 });
-                ((TextView)item.findViewById(R.id.el_text)).setText(answerObject.getText());
+                ((HtmlTextView)item.findViewById(R.id.el_text)).setHtml(answerObject.getText());
                 ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+answerObject.getNumberUserComments()+")");//el_date
                 ((TextView)item.findViewById(R.id.el_comm)).setText(answerObject.getToggleObjects().size()+" комментариев");
                 if (answerObject.getToggleObjects().size()>0) {
@@ -202,7 +197,7 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         for (final CommentAnswerObject answerObject: page.getAnswerObjects()){
             final View item = inflater.inflate(R.layout.el_comm_list, layoutKomments, false);
             ((TextView)item.findViewById(R.id.el_name)).setText(answerObject.getName() + " " + answerObject.getDogName());
-            ((TextView)item.findViewById(R.id.el_text)).setText(answerObject.getText());
+            ((HtmlTextView)item.findViewById(R.id.el_text)).setHtml(answerObject.getText());
             ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+answerObject.getNumberUserComments()+")");
             ((TextView)item.findViewById(R.id.el_comm)).setText(answerObject.getToggleObjects().size()+" комментариев");
             if (answerObject.getToggleObjects().size()>0) {
@@ -222,6 +217,4 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
 
         mSwipeRefreshLayout.setRefreshing(false);
     }
-
-//    private void viewsPost(final QuestionPageObject page) {
 }

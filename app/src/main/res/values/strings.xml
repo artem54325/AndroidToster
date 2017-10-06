@@ -9,5 +9,16 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_post">пПоси</string>
+    <string name="title_activity_post">Hi</string>
+
+    <string name="article_main" formatted="false"><![CDATA[
+<title>Главная страница</title><br/>
+<br/>
+<img src="res_pushkin_little"> <article_pushkin_stih>А.С. Пушкин "Как пить мы станем"</article_pushkin_stih><br/>
+<img src="res_activity_little"> <a href="activity-run://AnotherActivityHost?caption=Another%20Activity&text=Hello%20from%20markup!">Вызвать другую Activity</a><br/>
+<br/>
+<color_ff00ff00>Тест параметризированного тэга <color_ffff00ff>и вложенных спанов</color_ffff00ff>.</color_ff00ff00><br/>
+Тест анимированного GIF-а:<br/>
+<img src="res_alien_anim">
+    ]]></string>
 </resources>

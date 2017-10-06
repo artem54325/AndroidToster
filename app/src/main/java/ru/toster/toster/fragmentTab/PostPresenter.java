@@ -49,4 +49,8 @@ public class PostPresenter implements Presenter, NavigationView.OnNavigationItem
         }
         return true;
     }
+
+    public void setArticle(String article) {
+
+    }
 }
