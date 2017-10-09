@@ -1,8 +1,6 @@
 package ru.toster.toster;
 
 
-import android.app.Notification;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -10,7 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import ru.toster.toster.fragmentTab.QuestionFragment;
-import ru.toster.toster.fragmentTab.allTags.AllTagsFragment;
+import ru.toster.toster.fragmentTab.alltags.AllTagsFragment;
 import ru.toster.toster.fragmentTab.users.UsersFragment;
 
 public class NewsPresenter implements NavigationView.OnNavigationItemSelectedListener{

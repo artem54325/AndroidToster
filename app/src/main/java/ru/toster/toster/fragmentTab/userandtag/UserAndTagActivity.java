@@ -1,11 +1,9 @@
-package ru.toster.toster.fragmentTab.userAndTag;
+package ru.toster.toster.fragmentTab.userandtag;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -26,36 +24,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import ru.toster.toster.NewsActivity;
 import ru.toster.toster.R;
-import ru.toster.toster.fragmentTab.QuestionFragment;
-import ru.toster.toster.fragmentTab.allTags.AllTagsFragment;
-import ru.toster.toster.fragmentTab.users.UsersFragment;
+import ru.toster.toster.fragmentTab.NavigationItem;
+import ru.toster.toster.fragmentTab.PostPresenter;
 import ru.toster.toster.http.DowlandImage;
-import ru.toster.toster.http.HTTPCleint;
-import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.NameAndTagFullInfoObject;
 
 public class UserAndTagActivity extends AppCompatActivity
         implements AppBarLayout.OnOffsetChangedListener, NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {//
 
     private UserAndTagPresenter presenter;
-//    @BindView(R.id.materialup_tabs)
-    TabLayout tabLayout;
-    public static final String TAG = "UserAndTagFragment";
-//    @BindView(R.id.materialup_viewpager)
-    ViewPager viewPager;
+
+    @BindView(R.id.materialup_tabs) TabLayout tabLayout;
+    public static final String TAG = "UserAndTagActivity";
+    @BindView(R.id.materialup_viewpager) ViewPager viewPager;
     private boolean tagAndUser;
 
 
@@ -63,8 +51,7 @@ public class UserAndTagActivity extends AppCompatActivity
     private boolean mIsAvatarShown = true;
     private Toolbar toolbar;
 
-//    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    @BindView(R.id.drawer_layout) DrawerLayout drawer;
     private int mMaxScrollSize;
 
     @Override
@@ -78,9 +65,11 @@ public class UserAndTagActivity extends AppCompatActivity
         setContentView(R.layout.collapsing_toolbar_layout);
         toolbar = (Toolbar) findViewById(R.id.materialup_toolbar);
 
-//        ButterKnife.bind(this);
+        ButterKnife.bind(this);
 
-        presenter = new UserAndTagPresenter(this, getIntent().getStringExtra("url"), getIntent().getBooleanExtra("tag_and_user", true));
+        tagAndUser = getIntent().getBooleanExtra("tag_and_user", true);
+
+        presenter = new UserAndTagPresenter(this, getIntent().getStringExtra("url"), tagAndUser);
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -89,12 +78,7 @@ public class UserAndTagActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        tabLayout = (TabLayout) findViewById(R.id.materialup_tabs);
-
-        viewPager  = (ViewPager) findViewById(R.id.materialup_viewpager);
+        ((NavigationView) findViewById(R.id.nav_view)).setNavigationItemSelectedListener(new NavigationItem(this));
 
         AppBarLayout appbarLayout = (AppBarLayout) findViewById(R.id.materialup_appbar);
 
@@ -102,6 +86,7 @@ public class UserAndTagActivity extends AppCompatActivity
 
         appbarLayout.addOnOffsetChangedListener(this);
         mMaxScrollSize = appbarLayout.getTotalScrollRange();
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         presenter.getHttp();
@@ -136,13 +121,10 @@ public class UserAndTagActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {//onNavigationItemSelected
-        if (item.getItemId()==R.id.users){
-            onBackPressed();
-        }else{
-            Intent intent = new Intent(getApplicationContext(), NewsActivity.class);
-            intent.putExtra("id", item.getItemId());
-            startActivity(intent);
-        }
+        Intent intent = new Intent(getApplicationContext(), NewsActivity.class);
+        intent.putExtra("id", item.getItemId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
         return super.onOptionsItemSelected(item);
     }
 

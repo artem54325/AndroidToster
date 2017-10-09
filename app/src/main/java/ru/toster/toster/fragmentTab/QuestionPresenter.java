@@ -1,17 +1,10 @@
 package ru.toster.toster.fragmentTab;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import ru.toster.toster.Presenter;
-import ru.toster.toster.http.HTTPCleint;
+import ru.toster.toster.http.HttpCleint;
 import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.QuestionObject;
 
@@ -31,7 +24,7 @@ public class QuestionPresenter implements Presenter {
     public void getHttp() {
         if (url==null)
             return;
-        HTTPCleint cleint = new HTTPCleint(fragment.getContext(), this);
+        HttpCleint cleint = new HttpCleint(fragment.getContext(), this);
         cleint.setNumber(number);
         cleint.execute(url);
     }

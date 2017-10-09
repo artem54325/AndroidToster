@@ -104,12 +104,10 @@
                             android:text="название поста"
                             android:textSize="@dimen/post_text_size_name" />
 
-                        <org.sufficientlysecure.htmltextview.HtmlTextView
+                        <TextView
                             android:id="@+id/komm_text"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="7dp"
-                            android:text="text"
                             android:textSize="@dimen/post_text_size" />
 
                         <TextView

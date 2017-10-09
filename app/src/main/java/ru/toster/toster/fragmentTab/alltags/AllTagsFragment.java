@@ -1,4 +1,4 @@
-package ru.toster.toster.fragmentTab.allTags;
+package ru.toster.toster.fragmentTab.alltags;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,26 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import ru.toster.toster.R;
-import ru.toster.toster.fragmentTab.QuestionFragment;
-import ru.toster.toster.fragmentTab.QuestionPresenter;
-import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
+import ru.toster.toster.fragmentTab.userandtag.UserAndTagActivity;
 import ru.toster.toster.http.DowlandImage;
-import ru.toster.toster.http.HTTPCleint;
-import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.CardObject;
 
 

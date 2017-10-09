@@ -2,8 +2,11 @@ package ru.toster.toster.fragmentTab;
 
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
@@ -12,31 +15,39 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.hardsoftstudio.real.textview.utils.HtmlTagHandler;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
-import org.xml.sax.XMLReader;
 
-import java.util.concurrent.ExecutionException;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import ru.toster.toster.R;
-import ru.toster.toster.fragmentTab.textView.AppearanceSpan;
-import ru.toster.toster.fragmentTab.textView.ParameterizedSpan;
-import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
-import ru.toster.toster.http.DowlandImage;
+import ru.toster.toster.fragmentTab.textview.HtmlImageGet;
+import ru.toster.toster.fragmentTab.textview.HtmlTextTag;
+import ru.toster.toster.fragmentTab.userandtag.UserAndTagActivity;
 import ru.toster.toster.objects.CommentAnswerObject;
 import ru.toster.toster.objects.QuestionPageObject;
 
@@ -50,11 +61,26 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
 
     public static final String TAG = "PostAppCompat";
 
+    private String textSTATISTIC = "<div class=\"question__text\" itemprop=\"text description\">\n" +
+            "    Как взять значение в AppCompatActivity из Intenta?<br/>\n" +
+            "Запускаю я его так:<br/><pre><code class=\"java\">Intent intent = new Intent(getActivity(), GG.class);\n" +
+            "Bundle bundle = new Bundle();\n" +
+            "bundle.putString(\"url\", questionObject.getHref());\n" +
+            "intent.putExtras(bundle);\n" +
+            "startActivity(intent);</code></pre><br/>\n" +
+            "А забираю так:<br/><pre><code class=\"java\">String url = null;\n" +
+            "        Bundle bundle = savedInstanceState;\n" +
+            "        if (bundle!=null) url = bundle.getString(\"url\", null);</code></pre><br/>\n" +
+            "А когда хочу забрать значение параметра, у меня выдает null, что не так??  \n<img src=\"http://smartycms.ru/ftp/2017-10-07_155950.png\" alt=\"2017-10-07_155950.png\"></div>\n" +
+            "<a href=\"https://toster.ru/question/new\">asdad</a>\n"+
+            "      <ul class=\"question__attrs inline-list\">    \n <blockquote>asda</blockquote> " +
+            "\n <spoiler title=\"\">HIHIHIIH</spoiler>";
+
 //    @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
     @BindView(R.id.komm_text)
-    HtmlTextView text;
+    TextView text;
 
 
     @Override
@@ -82,8 +108,7 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(postPresenter);
+        ((NavigationView) findViewById(R.id.nav_view)).setNavigationItemSelectedListener(new NavigationItem(this));
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
@@ -142,7 +167,7 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         this.page = page;
         ((TextView) findViewById(R.id.komm_name)).setText(page.getName());
         ((TextView) findViewById(R.id.komm_dog_name)).setText(page.getDogName());
-        text.setHtml(page.getText());
+        text.setText(Html.fromHtml(page.getText(), new HtmlImageGet(page.getText(), text, this),null));// .replaceAll("<img","</br><img")
         ((TextView) findViewById(R.id.komm_time_and_views)).setText(page.getDate());
         ((TextView) findViewById(R.id.komm_question_tags)).setText(page.getTag());
         ((TextView) findViewById(R.id.komm_text_name)).setText(page.getTextName());
@@ -167,7 +192,8 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
                         startActivity(intent);
                     }
                 });
-                ((HtmlTextView)item.findViewById(R.id.el_text)).setHtml(answerObject.getText());
+                TextView textView = (TextView)item.findViewById(R.id.el_text);
+                textView.setText(Html.fromHtml(answerObject.getText(), new HtmlImageGet(answerObject.getText(), textView, this),null));; // textView.setText(//
                 ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+answerObject.getNumberUserComments()+")");//el_date
                 ((TextView)item.findViewById(R.id.el_comm)).setText(answerObject.getToggleObjects().size()+" комментариев");
                 if (answerObject.getToggleObjects().size()>0) {
@@ -196,8 +222,9 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
         ((TextView) findViewById(R.id.number_answer)).setText("ОТВЕТЫ НА ВОПРОС (" + page.getAnswerObjects().size() + ")");
         for (final CommentAnswerObject answerObject: page.getAnswerObjects()){
             final View item = inflater.inflate(R.layout.el_comm_list, layoutKomments, false);
+            TextView textView = (TextView)item.findViewById(R.id.el_text);
             ((TextView)item.findViewById(R.id.el_name)).setText(answerObject.getName() + " " + answerObject.getDogName());
-            ((HtmlTextView)item.findViewById(R.id.el_text)).setHtml(answerObject.getText());
+            textView.setText(Html.fromHtml(answerObject.getText(), new HtmlImageGet(answerObject.getText(), textView, this),null));//
             ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+answerObject.getNumberUserComments()+")");
             ((TextView)item.findViewById(R.id.el_comm)).setText(answerObject.getToggleObjects().size()+" комментариев");
             if (answerObject.getToggleObjects().size()>0) {
@@ -217,4 +244,5 @@ public class PostAppCompat extends AppCompatActivity implements SwipeRefreshLayo
 
         mSwipeRefreshLayout.setRefreshing(false);
     }
+    //И сразу же используем его
 }

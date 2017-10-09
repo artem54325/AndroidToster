@@ -1,12 +1,12 @@
-package ru.toster.toster.fragmentTab.userAndTag;
+package ru.toster.toster.fragmentTab.userandtag;
 
 
 import ru.toster.toster.NewsPresenter;
 import ru.toster.toster.Presenter;
 import ru.toster.toster.fragmentTab.QuestionFragment;
-import ru.toster.toster.fragmentTab.allTags.AllTagsFragment;
+import ru.toster.toster.fragmentTab.alltags.AllTagsFragment;
 import ru.toster.toster.fragmentTab.users.UsersFragment;
-import ru.toster.toster.http.HTTPCleint;
+import ru.toster.toster.http.HttpCleint;
 import ru.toster.toster.http.ParsingPage;
 import ru.toster.toster.objects.NameAndTagFullInfoObject;
 
@@ -24,7 +24,7 @@ public class UserAndTagPresenter implements Presenter{
 
     @Override
     public void getHttp() {
-        HTTPCleint cleint = new HTTPCleint(fragment, this);
+        HttpCleint cleint = new HttpCleint(fragment, this);
         cleint.execute(url+"/info");
     }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ru.toster.toster">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -10,7 +11,8 @@
         android:label="@string/app_name_pril"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:label">
         <activity
 
             android:name=".NewsActivity"
@@ -23,7 +25,7 @@
         </activity>
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".fragmentTab.userAndTag.UserAndTagActivity"></activity>
+            android:name=".fragmentTab.userandtag.UserAndTagActivity"></activity>
         <activity
             android:theme="@style/AppTheme.NoActionBar"
             android:name=".fragmentTab.PostAppCompat"></activity>

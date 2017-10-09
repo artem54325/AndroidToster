@@ -36,7 +36,7 @@
                 android:text="Имя"
                 android:textSize="10sp" />
 
-            <org.sufficientlysecure.htmltextview.HtmlTextView
+            <TextView
                 android:id="@+id/el_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -24,6 +24,7 @@ public class DowlandImage  extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String...urls){
         String urlOfImage = urls[0];
         Bitmap logo = null;
+        if (urlOfImage.equals("https://toster.ru/images/no_avatar.png")) return null;
         try{
             InputStream is = new URL(urlOfImage).openStream();
                 /*

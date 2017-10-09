@@ -3,21 +3,19 @@ package ru.toster.toster.fragmentTab;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.DialogFragment;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import java.util.List;
 
 import ru.toster.toster.R;
-import ru.toster.toster.fragmentTab.userAndTag.UserAndTagActivity;
+import ru.toster.toster.fragmentTab.userandtag.UserAndTagActivity;
 import ru.toster.toster.objects.CommentToggleObject;
 
 
@@ -58,11 +56,11 @@ public class CommentFragment extends DialogFragment {
                 public void onClick(View view) {
                     Intent intent = new Intent(getActivity().getApplicationContext(), UserAndTagActivity.class);
                     intent.putExtra("url", "https://toster.ru/user/"+listCommentToggle.get(finalI).getDogName().replace("@",""));
-                    intent.putExtra("tag_and_user", true);
+                    intent.putExtra("tag_and_user", false);
                     startActivity(intent);
                 }
             });
-            ((TextView)item.findViewById(R.id.el_text)).setText(listCommentToggle.get(i).getText(), TextView.BufferType.SPANNABLE);
+            ((HtmlTextView)item.findViewById(R.id.el_text)).setHtml(listCommentToggle.get(i).getText());//), TextView.BufferType.SPANNABLE
             ((TextView)item.findViewById(R.id.el_like)).setText("Нравится ("+listCommentToggle.get(i).getLike()+")");
             ((TextView)item.findViewById(R.id.el_date)).setText(listCommentToggle.get(i).getDate());
             ((TextView)item.findViewById(R.id.el_comm)).setText("Ответить");

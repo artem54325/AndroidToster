@@ -24,13 +24,13 @@ import okhttp3.Response;
 import ru.toster.toster.Presenter;
 import ru.toster.toster.objects.QuestionPageObject;
 
-public class HTTPCleint extends AsyncTask<String, Void, String> {
+public class HttpCleint extends AsyncTask<String, Void, String> {
     private Context context;
     private int number = 1;
     private final Presenter presenter;
 
 
-    public HTTPCleint(Context context, Presenter presenter) {
+    public HttpCleint(Context context, Presenter presenter) {
         this.context = context;
         this.presenter = presenter;
     }
