@@ -1,11 +1,11 @@
-package ru.toster.artem.fragmentTab.alltags;
+package ru.toster.artem.ui.alltags;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.toster.artem.Presenter;
-import ru.toster.artem.http.HttpCleint;
-import ru.toster.artem.http.ParsingPage;
+import ru.toster.artem.utility.HttpCleint;
+import ru.toster.artem.ui.ParsingPage;
 import ru.toster.artem.objects.CardObject;
 
 

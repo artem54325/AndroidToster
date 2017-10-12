@@ -1,4 +1,4 @@
-package ru.toster.artem.http;
+package ru.toster.artem.ui;
 
 
 import java.util.ArrayList;

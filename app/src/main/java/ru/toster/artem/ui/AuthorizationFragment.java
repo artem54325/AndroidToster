@@ -1,7 +1,5 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

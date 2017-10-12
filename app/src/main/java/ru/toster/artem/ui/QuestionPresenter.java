@@ -1,12 +1,11 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.toster.artem.Presenter;
-import ru.toster.artem.http.HttpCleint;
+import ru.toster.artem.utility.HttpCleint;
 import ru.toster.artem.objects.QuestionObject;
-import ru.toster.artem.http.ParsingPage;
 
 
 public class QuestionPresenter implements Presenter {

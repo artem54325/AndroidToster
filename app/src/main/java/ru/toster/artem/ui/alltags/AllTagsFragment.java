@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab.alltags;
+package ru.toster.artem.ui.alltags;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +19,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ru.toster.artem.fragmentTab.userandtag.UserAndTagActivity;
-import ru.toster.artem.http.DowlandImage;
+import ru.toster.artem.ui.userandtag.UserAndTagActivity;
+import ru.toster.artem.utility.DowlandImage;
 import ru.toster.artem.objects.CardObject;
 import ru.toster.toster.R;
 

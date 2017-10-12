@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
 
 import android.content.Intent;
@@ -22,10 +22,10 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import ru.toster.artem.fragmentTab.textview.HtmlImageGet;
+import ru.toster.artem.ui.textview.HtmlImageGet;
 import ru.toster.artem.objects.CommentAnswerObject;
 import ru.toster.toster.R;
-import ru.toster.artem.fragmentTab.userandtag.UserAndTagActivity;
+import ru.toster.artem.ui.userandtag.UserAndTagActivity;
 import ru.toster.artem.objects.QuestionPageObject;
 
 

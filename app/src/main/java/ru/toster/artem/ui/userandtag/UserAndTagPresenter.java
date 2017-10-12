@@ -1,13 +1,13 @@
-package ru.toster.artem.fragmentTab.userandtag;
+package ru.toster.artem.ui.userandtag;
 
 
-import ru.toster.artem.fragmentTab.users.UsersFragment;
+import ru.toster.artem.ui.users.UsersFragment;
 import ru.toster.artem.NewsPresenter;
 import ru.toster.artem.Presenter;
-import ru.toster.artem.fragmentTab.QuestionFragment;
-import ru.toster.artem.fragmentTab.alltags.AllTagsFragment;
-import ru.toster.artem.http.HttpCleint;
-import ru.toster.artem.http.ParsingPage;
+import ru.toster.artem.ui.QuestionFragment;
+import ru.toster.artem.ui.alltags.AllTagsFragment;
+import ru.toster.artem.utility.HttpCleint;
+import ru.toster.artem.ui.ParsingPage;
 import ru.toster.artem.objects.NameAndTagFullInfoObject;
 
 public class UserAndTagPresenter implements Presenter{

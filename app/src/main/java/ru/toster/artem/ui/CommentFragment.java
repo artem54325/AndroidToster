@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +15,7 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 import java.util.List;
 
 import ru.toster.toster.R;
-import ru.toster.artem.fragmentTab.userandtag.UserAndTagActivity;
+import ru.toster.artem.ui.userandtag.UserAndTagActivity;
 import ru.toster.artem.objects.CommentToggleObject;
 
 

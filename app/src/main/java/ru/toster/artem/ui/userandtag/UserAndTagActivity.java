@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab.userandtag;
+package ru.toster.artem.ui.userandtag;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,8 +30,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.toster.artem.NewsActivity;
-import ru.toster.artem.fragmentTab.NavigationItem;
-import ru.toster.artem.http.DowlandImage;
+import ru.toster.artem.ui.NavigationItem;
+import ru.toster.artem.utility.DowlandImage;
 import ru.toster.artem.objects.NameAndTagFullInfoObject;
 import ru.toster.toster.R;
 

@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab.textview;
+package ru.toster.artem.ui.textview;
 
 
 import android.text.TextPaint;

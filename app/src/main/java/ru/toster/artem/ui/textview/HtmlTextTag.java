@@ -1,8 +1,7 @@
-package ru.toster.artem.fragmentTab.textview;
+package ru.toster.artem.ui.textview;
 
 
 import android.text.Editable;
-import android.text.Html;
 import android.text.Html.TagHandler;
 import android.text.Layout;
 import android.text.Spannable;
@@ -10,9 +9,6 @@ import android.text.style.AlignmentSpan;
 import android.text.style.BulletSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.TypefaceSpan;
-import android.util.Log;
-
-import com.hardsoftstudio.real.textview.views.RealTextView;
 
 import org.xml.sax.XMLReader;
 

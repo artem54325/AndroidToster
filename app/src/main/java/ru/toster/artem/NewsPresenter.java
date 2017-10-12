@@ -7,10 +7,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
-import ru.toster.artem.fragmentTab.QuestionFragment;
-import ru.toster.artem.fragmentTab.users.UsersFragment;
+import ru.toster.artem.ui.QuestionFragment;
+import ru.toster.artem.ui.users.UsersFragment;
 import ru.toster.toster.R;
-import ru.toster.artem.fragmentTab.alltags.AllTagsFragment;
+import ru.toster.artem.ui.alltags.AllTagsFragment;
 
 public class NewsPresenter implements NavigationView.OnNavigationItemSelectedListener{
     private final NewsActivity activity;

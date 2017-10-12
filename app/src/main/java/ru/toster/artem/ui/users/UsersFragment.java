@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab.users;
+package ru.toster.artem.ui.users;
 
 
 import android.content.Intent;
@@ -24,8 +24,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.toster.toster.R;
-import ru.toster.artem.fragmentTab.userandtag.UserAndTagActivity;
-import ru.toster.artem.http.DowlandImage;
+import ru.toster.artem.ui.userandtag.UserAndTagActivity;
+import ru.toster.artem.utility.DowlandImage;
 import ru.toster.artem.objects.CardObject;
 
 public class UsersFragment extends Fragment implements ViewTreeObserver.OnScrollChangedListener, SwipeRefreshLayout.OnRefreshListener {

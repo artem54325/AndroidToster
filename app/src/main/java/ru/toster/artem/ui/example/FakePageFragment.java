@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab.example;
+package ru.toster.artem.ui.example;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

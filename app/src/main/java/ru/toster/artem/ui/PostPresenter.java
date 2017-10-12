@@ -1,9 +1,8 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
 
 import ru.toster.artem.Presenter;
-import ru.toster.artem.http.HttpCleint;
-import ru.toster.artem.http.ParsingPage;
+import ru.toster.artem.utility.HttpCleint;
 
 public class PostPresenter implements Presenter {
     private PostAppCompat fragment;

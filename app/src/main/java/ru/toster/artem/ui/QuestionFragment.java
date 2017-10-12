@@ -1,4 +1,4 @@
-package ru.toster.artem.fragmentTab;
+package ru.toster.artem.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -80,6 +80,7 @@ public class QuestionFragment extends Fragment implements SwipeRefreshLayout.OnR
             ((TextView)item.findViewById(R.id.el_date)).setText(questionObject.getDate());
             ((TextView)item.findViewById(R.id.el_question)).setText(questionObject.getQuestion());
             ((TextView)item.findViewById(R.id.el_views)).setText(questionObject.getViews());
+//            questionObject.e
             ((TextView)item.findViewById(R.id.el_subscribers)).setText(questionObject.getSubscribers());
 
             item.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
